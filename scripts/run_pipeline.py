@@ -6,6 +6,7 @@ from ingestion.pipelines.ipma import run as ipma_run
 from ingestion.pipelines.open_meteo import run as open_meteo_run
 from ingestion.pipelines.openweathermap import run as openweathermap_run
 from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
+from ingestion.pipelines.traffic_flow import run as traffic_flow_run
 from utils.logging import get_logger
 
 load_dotenv()
@@ -14,7 +15,8 @@ PIPELINES = {
     "ipma_ingestion": ipma_run,
     "open_meteo_ingestion": open_meteo_run,
     "openweathermap_ingestion": openweathermap_run,
-    "postos_abastecimento_ingestion": postos_abastecimento_run
+    "postos_abastecimento_ingestion": postos_abastecimento_run,
+    "traffic_flow_ingestion": traffic_flow_run
 }
 
 
