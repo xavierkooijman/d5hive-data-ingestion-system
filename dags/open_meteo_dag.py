@@ -11,7 +11,7 @@ def run_open_meteo():
     with open("pipelines_config/open_meteo.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["pipeline_name"])
+    get_logger()
     open_meteo_run(config)
 
 

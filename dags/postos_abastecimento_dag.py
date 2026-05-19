@@ -11,7 +11,7 @@ def run_postos_abastecimento():
     with open("pipelines_config/postos_abastecimento.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["pipeline_name"])
+    get_logger()
     postos_abastecimento_run(config)
 
 

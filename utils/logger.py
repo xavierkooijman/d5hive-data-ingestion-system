@@ -32,13 +32,13 @@ class LokiHandler(logging.Handler):
                 }]},
                 timeout=5
             )
-            print(f"Loki response: {response.status_code}")  # temp debug
+            print(f"Loki response: {response.status_code}")
         except Exception as e:
-            print(f"Loki error: {e}")  # temp debug
+            print(f"Loki error: {e}")
 
 
-def get_logger(name):
-    logger = logging.getLogger(name)
+def get_logger():
+    logger = logging.getLogger()
 
     if not logger.handlers:
         logger.setLevel(logging.INFO)

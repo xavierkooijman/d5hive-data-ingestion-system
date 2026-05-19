@@ -11,7 +11,7 @@ def run_openweathermap():
     with open("pipelines_config/openweathermap.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["pipeline_name"])
+    get_logger()
     openweathermap_run(config)
 
 
