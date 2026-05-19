@@ -3,6 +3,8 @@ import requests
 import base64
 import time
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 class LokiHandler(logging.Handler):
@@ -16,7 +18,7 @@ class LokiHandler(logging.Handler):
 
     def emit(self, record):
         try:
-            requests.post(
+            response = requests.post(
                 self.url,
                 headers={
                     "Content-Type": "application/json",
@@ -32,8 +34,9 @@ class LokiHandler(logging.Handler):
                 }]},
                 timeout=5
             )
-        except Exception:
-            pass
+            print(f"Loki response: {response.status_code}")  # temp debug
+        except Exception as e:
+            print(f"Loki error: {e}")  # temp debug
 
 
 def get_logger(name):
@@ -56,3 +59,10 @@ def get_logger(name):
             logger.addHandler(loki_handler)
 
     return logger
+
+
+if __name__ == "__main__":
+    logger = get_logger("test")
+    # should show StreamHandler and LokiHandler
+    print(f"Handlers: {logger.handlers}")
+    logger.info("test from logging.py")

@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 import yaml
-from utils.logging import get_logger
+from utils.logger import get_logger
 from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
 
 

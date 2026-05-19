@@ -2,7 +2,7 @@ from ingestion.sources.api import fetch_data_from_api
 from ingestion.transformations.common import normalize_timestamp, ms_to_kmh
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
-from utils.email import send_email
+from utils.mailer import send_email
 import clts_pcp as clts
 import logging
 from utils.common import resolve_secret
