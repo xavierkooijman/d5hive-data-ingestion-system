@@ -9,3 +9,7 @@ secrets/
 *.pem
 
 aiven_connection.py
+logs/
+*.log
+airflow.cfg
+webserver_config.py

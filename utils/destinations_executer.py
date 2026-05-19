@@ -1,6 +1,9 @@
 from utils.destinations_loader import load_destination
 from utils.destinations_registry import get_destination
 from utils.common import resolve_secret
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def run_destinations(config, data):
@@ -15,4 +18,6 @@ def run_destinations(config, data):
 
         dest_config["password"] = resolve_secret(dest_config["password"])
 
+        logger.info(
+            f"Inserting {len(data)} rows into destination: {dest['name']}")
         insert_fn(dest_config, data)
