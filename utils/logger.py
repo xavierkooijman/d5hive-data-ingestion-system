@@ -3,8 +3,6 @@ import requests
 import base64
 import time
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 
 class LokiHandler(logging.Handler):
@@ -59,10 +57,3 @@ def get_logger(name):
             logger.addHandler(loki_handler)
 
     return logger
-
-
-if __name__ == "__main__":
-    logger = get_logger("test")
-    # should show StreamHandler and LokiHandler
-    print(f"Handlers: {logger.handlers}")
-    logger.info("test from logging.py")
