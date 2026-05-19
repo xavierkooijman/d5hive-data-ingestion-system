@@ -17,7 +17,7 @@ def run_open_meteo():
 
 with DAG(
     dag_id='open_meteo_ingestion',
-    schedule='/15 * * * *',
+    schedule='*/15 * * * *',
     start_date=datetime(2026, 5, 18),
     catchup=False,
     default_args={

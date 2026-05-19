@@ -11,7 +11,7 @@ def run_ipma():
     with open("pipelines_config/ipma.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["name"])
+    logger = get_logger(config["pipeline_name"])
     ipma_run(config)
 
 

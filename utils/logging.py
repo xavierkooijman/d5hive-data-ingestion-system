@@ -1,6 +1,39 @@
 import logging
-import logging_loki
+import requests
+import base64
+import time
 import os
+
+
+class LokiHandler(logging.Handler):
+    def __init__(self):
+        super().__init__()
+        instance_id = os.getenv("GRAFANA_INSTANCE_ID")
+        api_key = os.getenv("GRAFANA_API_KEY")
+        self.url = os.getenv("GRAFANA_LOKI_URL")
+        self.auth = base64.b64encode(
+            f"{instance_id}:{api_key}".encode()).decode()
+
+    def emit(self, record):
+        try:
+            requests.post(
+                self.url,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Basic {self.auth}",
+                },
+                json={"streams": [{
+                    "stream": {
+                        "service": "ingestion",
+                        "level": record.levelname,
+                        "logger": record.name,
+                    },
+                    "values": [[str(int(time.time() * 1e9)), self.format(record)]]
+                }]},
+                timeout=5
+            )
+        except Exception:
+            pass
 
 
 def get_logger(name):
@@ -17,14 +50,8 @@ def get_logger(name):
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        loki_url = os.getenv("GRAFANA_URL")
-        if loki_url:
-            loki_handler = logging_loki.LokiHandler(
-                url=loki_url,
-                auth=(os.getenv("GRAFANA_USER"), os.getenv("GRAFANA_API_KEY")),
-                tags={"app": "ingestion", "logger": name},
-                version="1",
-            )
+        if os.getenv("GRAFANA_LOKI_URL"):
+            loki_handler = LokiHandler()
             loki_handler.setFormatter(formatter)
             logger.addHandler(loki_handler)
 
