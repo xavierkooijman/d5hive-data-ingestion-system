@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 import yaml
-from utils.logging import get_logger
+from utils.logger import get_logger
 from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
 
 
@@ -11,7 +11,7 @@ def run_postos_abastecimento():
     with open("pipelines_config/postos_abastecimento.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["pipeline_name"])
+    get_logger()
     postos_abastecimento_run(config)
 
 

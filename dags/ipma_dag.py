@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 import yaml
-from utils.logging import get_logger
+from utils.logger import get_logger
 from ingestion.pipelines.ipma import run as ipma_run
 
 
@@ -11,7 +11,7 @@ def run_ipma():
     with open("pipelines_config/ipma.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["name"])
+    get_logger()
     ipma_run(config)
 
 

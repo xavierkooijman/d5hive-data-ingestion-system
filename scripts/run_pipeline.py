@@ -7,7 +7,7 @@ from ingestion.pipelines.open_meteo import run as open_meteo_run
 from ingestion.pipelines.openweathermap import run as openweathermap_run
 from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
 from ingestion.pipelines.traffic_flow import run as traffic_flow_run
-from utils.logging import get_logger
+from utils.logger import get_logger
 
 load_dotenv()
 

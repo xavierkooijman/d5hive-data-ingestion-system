@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 import yaml
-from utils.logging import get_logger
+from utils.logger import get_logger
 from ingestion.pipelines.traffic_flow import run as traffic_flow_run
 
 
@@ -11,7 +11,7 @@ def run_traffic_flow():
     with open("pipelines_config/traffic_flow.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    logger = get_logger(config["pipeline_name"])
+    get_logger()
     traffic_flow_run(config)
 
 
