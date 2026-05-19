@@ -8,28 +8,32 @@ import logging
 
 
 def run(config):
-
     try:
         logger = logging.getLogger(__name__)
 
         tstart = clts.getts()
-        logger.info("Pipeline Started")
         clts.elapt["Pipeline Started"] = clts.deltat(tstart)
+        logger.info("Starting IPMA Weather Station Data Retrieval pipeline")
 
         env = detect_environment()
 
         clts.elapt[f"Environment Detected: {env}"] = clts.deltat(tstart)
+        logger.info(f"Environment detected: {env}")
 
         clts.setcontext(
             f'IPMA Weather Station Data Retrieval - Environment: {env}')
 
         clts.elapt[f"Fetching data from API URL: {config["source"]["url"]}"] = clts.deltat(
             tstart)
+        logger.info(f"Fetching data from API URL: {config['source']['url']}")
         raw_data = fetch_data_from_api(config["source"]["url"])
+        logger.info(
+            f"{len(raw_data.get('features', []))} rows of data fetched successfully from API")
 
         clts.elapt["Data fetched from API"] = clts.deltat(tstart)
 
         clts.elapt["Normalizing and transforming data"] = clts.deltat(tstart)
+        logger.info("Normalizing and transforming data")
 
         features = []
         for feature in raw_data.get("features", []):
@@ -58,16 +62,21 @@ def run(config):
                 "radiation_kjm2": props.get("radiacao")
             })
 
+        logger.info("Data normalized and transformed")
         clts.elapt["Data normalized and transformed"] = clts.deltat(tstart)
 
-        clts.elapt[f"Inserting data into destinations: {', '.join([dest['name'] for dest in config['destinations']])}"] = clts.deltat(
+        logger.info(
+            f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}")
+        clts.elapt[f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}"] = clts.deltat(
             tstart)
 
         run_destinations(config, data)
     except Exception as e:
-        logger.error(f"Pipeline failed: {e}")
+        logger.error(f"Pipeline {config['name']} failed: {e}")
         raise
     finally:
         toemail = clts.listtimes()
         if config["email"]["send"]:
+            logger.info("Sending email notification")
             send_email(env, config["email"], toemail)
+            logger.info("Email notification sent")
