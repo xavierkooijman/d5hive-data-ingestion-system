@@ -1,4 +1,4 @@
-from ingestion.sources.api import fetch_data_from_api
+from ingestion.sources.api import APIClient
 from ingestion.transformations.common import normalize_timestamp, ms_to_kmh
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
@@ -23,15 +23,19 @@ def run(config):
         clts.setcontext(
             f'Openweathermap Weather Data Retrieval - Environment: {env}')
 
-        clts.elapt[f"Fetching data from API URL: {config["source"]["url"]}"] = clts.deltat(
+        clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}{config["source"]["endpoint"]}"] = clts.deltat(
             tstart)
 
         params = config["source"].get("parameters", {})
         if "appid" in params:
             params["appid"] = resolve_secret(params["appid"])
 
-        raw_data = fetch_data_from_api(
-            config["source"]["url"], params=params)
+        logger.info(
+            f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
+
+        apiClient = APIClient(config["source"]["base_url"])
+        raw_data = apiClient.get(
+            config["source"]["endpoint"], params=config["source"].get("parameters", {}))
 
         clts.elapt["Data fetched from API"] = clts.deltat(tstart)
 

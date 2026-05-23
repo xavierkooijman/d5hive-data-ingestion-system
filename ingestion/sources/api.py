@@ -4,17 +4,6 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-def fetch_data_from_api(url, params=None, headers=None, timeout=10):
-    try:
-        response = requests.get(
-            url, params=params, headers=headers, timeout=timeout)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        logging.error(f"Error fetching data from API: {e}")
-        raise
-
-
 class APIClient:
     def __init__(self, base_url, timeout=10):
         self.base_url = base_url.rstrip('/')
@@ -33,15 +22,15 @@ class APIClient:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.Timeout:
-            logger.error(f"Request timed out for {self.url}")
+            logger.error(f"Request timed out for {url}")
             raise
         except requests.exceptions.ConnectionError:
-            logger.error(f"Connection error for {self.url}")
+            logger.error(f"Connection error for {url}")
             raise
         except requests.exceptions.HTTPError as e:
             logger.error(
-                f"HTTP error {e.response.status_code}: {e.response.text} for {self.url}")
+                f"HTTP error {e.response.status_code}: {e.response.text} for {url}")
             raise
         except requests.RequestException as e:
-            logger.error(f"Error fetching data from {self.url}: {e}")
+            logger.error(f"Error fetching data from {url}: {e}")
             raise

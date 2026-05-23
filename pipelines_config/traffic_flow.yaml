@@ -2,7 +2,8 @@ pipeline_name: traffic_flow_ingestion
 source:
   name: TomTom
   type: api
-  url: https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/json
+  base_url: https://api.tomtom.com
+  endpoint: /traffic/services/4/flowSegmentData/absolute/10/json
   parameters:
     point: 41.2357,-8.6199
     key: $TOM_TOM_API_KEY
@@ -23,7 +24,7 @@ email:
   from: cmmaiaxavier@gmail.com
   password: $EMAIL_PASSWORD
   api_key: $RESEND_API_KEY
-  subject: Openweathermap Ingestion Pipeline Report
+  subject: TomTom Traffic Flow Ingestion Pipeline Report
   recipients:
     - cmmaiaxavier@gmail.com
     - xavierkooijman@gmail.com
