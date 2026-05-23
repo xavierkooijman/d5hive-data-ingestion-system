@@ -1,10 +1,10 @@
-from ingestion.sources.api import APIClient, fetch_data_from_api
+from ingestion.sources.api import APIClient
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
 from utils.mailer import send_email
 import clts_pcp as clts
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 import geopandas as gpd
 from shapely.geometry import Point
 
@@ -24,6 +24,8 @@ def run(config):
 
         clts.setcontext(
             f'Postos de Abastecimento DGEG Data Retrieval - Environment: {env}')
+
+        current_timestamp = datetime.now(timezone.utc)
 
         clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}"] = clts.deltat(
             tstart)
@@ -62,8 +64,6 @@ def run(config):
             tstart)
 
         clts.elapt["Normalizing filtered data"] = clts.deltat(tstart)
-
-        current_timestamp = datetime.now().isoformat()
 
         data = []
 

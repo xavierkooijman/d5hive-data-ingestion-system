@@ -6,6 +6,7 @@ source:
   base_url: https://api.ipma.pt
   endpoint: /open-data/observation/meteorology/stations/obs-surface.geojson
   station_id: 1200545
+  timezone: Europe/Lisbon
 
 destinations:
   - type: crate
