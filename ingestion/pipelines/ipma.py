@@ -1,4 +1,4 @@
-from ingestion.sources.api import fetch_data_from_api
+from ingestion.sources.api import APIClient
 from ingestion.transformations.common import normalize_timestamp, wind_direction_to_degrees
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
@@ -23,10 +23,14 @@ def run(config):
         clts.setcontext(
             f'IPMA Weather Station Data Retrieval - Environment: {env}')
 
-        clts.elapt[f"Fetching data from API URL: {config["source"]["url"]}"] = clts.deltat(
+        clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}"] = clts.deltat(
             tstart)
-        logger.info(f"Fetching data from API URL: {config['source']['url']}")
-        raw_data = fetch_data_from_api(config["source"]["url"])
+        logger.info(
+            f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
+
+        apiClient = APIClient(config["source"]["base_url"])
+        raw_data = apiClient.get(config["source"]["endpoint"])
+
         logger.info(
             f"{len(raw_data.get('features', []))} rows of data fetched successfully from API")
 

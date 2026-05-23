@@ -16,7 +16,7 @@ def fetch_data_from_api(url, params=None, headers=None, timeout=10):
 
 
 class APIClient:
-    def __init__(self, base_url, timeout):
+    def __init__(self, base_url, timeout=10):
         self.base_url = base_url.rstrip('/')
         self.timeout = timeout
         self.session = requests.Session()
