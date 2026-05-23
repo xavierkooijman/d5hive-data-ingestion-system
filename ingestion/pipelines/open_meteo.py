@@ -1,5 +1,5 @@
 from ingestion.sources.api import APIClient
-from ingestion.transformations.common import normalize_timestamp
+from ingestion.transformations.time import normalize_unix_timestamp
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
 from utils.mailer import send_email
@@ -41,7 +41,7 @@ def run(config):
         data = [{
             "hostfeed": "hostfeed",
             "source": config["source"]["name"],
-            "tstamp": normalize_timestamp(current_weather.get("time")),
+            "tstamp": normalize_unix_timestamp(current_weather.get("time")),
             "latitude": raw_data.get("latitude"),
             "longitude": raw_data.get("longitude"),
             "temperature_celsius": current_weather.get("temperature"),

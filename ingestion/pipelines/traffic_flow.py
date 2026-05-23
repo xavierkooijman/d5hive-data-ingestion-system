@@ -5,7 +5,7 @@ from utils.mailer import send_email
 import clts_pcp as clts
 import logging
 from utils.common import resolve_secret
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def run(config):
@@ -23,7 +23,7 @@ def run(config):
         clts.setcontext(
             f'TomTom Traffic Flow Data Retrieval - Environment: {env}')
 
-        current_timestamp = datetime.now().isoformat()
+        current_timestamp = datetime.now(timezone.utc)
 
         clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}{config["source"]["endpoint"]}"] = clts.deltat(
             tstart)
