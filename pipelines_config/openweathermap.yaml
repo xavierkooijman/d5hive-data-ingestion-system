@@ -2,7 +2,8 @@ pipeline_name: openweathermap_ingestion
 source:
   name: openweathermap
   type: api
-  url: https://api.openweathermap.org/data/2.5/weather
+  base_url: https://api.openweathermap.org
+  endpoint: /data/2.5/weather
   parameters:
     lat: 41.2357
     lon: -8.6199

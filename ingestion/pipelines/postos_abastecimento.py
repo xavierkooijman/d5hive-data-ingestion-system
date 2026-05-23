@@ -1,4 +1,4 @@
-from ingestion.sources.api import fetch_data_from_api
+from ingestion.sources.api import APIClient, fetch_data_from_api
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
 from utils.mailer import send_email
@@ -25,9 +25,13 @@ def run(config):
         clts.setcontext(
             f'Postos de Abastecimento DGEG Data Retrieval - Environment: {env}')
 
-        clts.elapt[f"Fetching data from API URL: {config["source"]["url"]}"] = clts.deltat(
+        clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}"] = clts.deltat(
             tstart)
-        raw_data = fetch_data_from_api(config["source"]["url"])
+        logger.info(
+            f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
+
+        apiClient = APIClient(config["source"]["base_url"])
+        raw_data = apiClient.get(config["source"]["endpoint"])
 
         clts.elapt["Data fetched from API"] = clts.deltat(tstart)
 

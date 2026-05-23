@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     pipeline_name = config["pipeline_name"]
 
-    logger = get_logger(pipeline_name)
+    logger = get_logger()
 
     pipeline = PIPELINES[pipeline_name]
 

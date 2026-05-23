@@ -3,7 +3,8 @@ pipeline_name: postos_abastecimento_ingestion
 source:
   name: DGEG
   type: api
-  url: https://servergeo.dgeg.gov.pt/arcgis/services/Visualizadores/PACVR/MapServer/WFSServer?request=GetFeature&service=WFS&typename=PACVR:Postos_Abastecimento&outputFormat=GEOJSON
+  base_url: https://servergeo.dgeg.gov.pt
+  endpoint: /arcgis/services/Visualizadores/PACVR/MapServer/WFSServer?request=GetFeature&service=WFS&typename=PACVR:Postos_Abastecimento&outputFormat=GEOJSON
 
 destinations:
   - type: crate

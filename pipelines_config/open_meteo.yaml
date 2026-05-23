@@ -2,7 +2,8 @@ pipeline_name: open_meteo_ingestion
 source:
   name: open_meteo
   type: api
-  url: https://api.open-meteo.com/v1/forecast
+  base_url: https://api.open-meteo.com
+  endpoint: /v1/forecast
   parameters:
     latitude: 41.2357
     longitude: -8.6199

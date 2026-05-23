@@ -3,7 +3,8 @@ pipeline_name: ipma_ingestion
 source:
   name: ipma
   type: api
-  url: https://api.ipma.pt/open-data/observation/meteorology/stations/obs-surface.geojson
+  base_url: https://api.ipma.pt
+  endpoint: /open-data/observation/meteorology/stations/obs-surface.geojson
   station_id: 1200545
 
 destinations:
