@@ -17,7 +17,7 @@ def run_ipma():
 
 with DAG(
     dag_id='ipma_ingestion',
-    schedule='0 * * * *',
+    schedule='0 */3 * * *',
     start_date=datetime(2026, 5, 18),
     catchup=False,
     default_args={
