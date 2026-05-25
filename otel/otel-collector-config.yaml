@@ -4,6 +4,16 @@ receivers:
       http:
         endpoint: 0.0.0.0:4318
 
+  hostmetrics:
+    root_path: "/hostfs"
+    collection_interval: 60s
+    scrapers:
+      cpu:
+      load:
+      memory:
+      disk:
+      network:
+
 exporters:
   debug:
     verbosity: detailed
@@ -11,9 +21,16 @@ exporters:
     endpoint: "https://logs-prod-043.grafana.net/otlp"
     headers:
       Authorization: "Basic ${LOKI_AUTH}"
+  prometheusremotewrite/metrics:
+    endpoint: "https://prometheus-prod-68-prod-eu-west-6.grafana.net/api/prom/push"
+    headers:
+      Authorization: "Basic ${GRAFANA_METRICS_AUTH}"
 
 service:
   pipelines:
     logs:
       receivers: [otlp]
       exporters: [debug, otlp_http/logs]
+    metrics:
+      receivers: [hostmetrics]
+      exporters: [prometheusremotewrite/metrics]
