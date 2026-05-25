@@ -19,12 +19,7 @@ def get_logger():
 
     logger.setLevel(logging.INFO)
 
-    formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)s | %(module)s.%(funcName)s | %(message)s"
-    )
-
     handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
     logger.addHandler(handler)
 
     if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT"):
