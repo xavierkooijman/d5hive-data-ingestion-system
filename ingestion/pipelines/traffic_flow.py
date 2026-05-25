@@ -19,6 +19,7 @@ def run(config):
         env = detect_environment()
 
         clts.elapt[f"Environment Detected: {env}"] = clts.deltat(tstart)
+        logger.info(f"Environment detected: {env}")
 
         clts.setcontext(
             f'TomTom Traffic Flow Data Retrieval - Environment: {env}')
@@ -27,13 +28,12 @@ def run(config):
 
         clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}{config["source"]["endpoint"]}"] = clts.deltat(
             tstart)
+        logger.info(
+            f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
         params = config["source"].get("parameters", {})
         if "key" in params:
             params["key"] = resolve_secret(params["key"])
-
-        logger.info(
-            f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
         apiClient = APIClient(config["source"]["base_url"])
         raw_data = apiClient.get(
@@ -42,6 +42,8 @@ def run(config):
         clts.elapt["Data fetched from API"] = clts.deltat(tstart)
 
         clts.elapt["Normalizing and transforming data"] = clts.deltat(tstart)
+
+        logger.info("Normalizing and transforming data")
 
         flow_segment_data = raw_data.get("flowSegmentData", {})
 
@@ -61,9 +63,12 @@ def run(config):
         }]
 
         clts.elapt["Data normalized and transformed"] = clts.deltat(tstart)
+        logger.info("Data normalized and transformed")
 
         clts.elapt[f"Inserting data into destinations: {', '.join([dest['name'] for dest in config['destinations']])}"] = clts.deltat(
             tstart)
+        logger.info(
+            f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}")
 
         run_destinations(config, data)
     except Exception as e:

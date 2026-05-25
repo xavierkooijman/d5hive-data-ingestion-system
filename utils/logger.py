@@ -1,59 +1,42 @@
 import logging
-import requests
-import base64
-import time
 import os
+from opentelemetry.sdk._logs import LoggerProvider
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
+from opentelemetry.sdk.resources import Resource
+from opentelemetry._logs import set_logger_provider
+from opentelemetry.sdk._logs import LoggingHandler
 
-
-class LokiHandler(logging.Handler):
-    def __init__(self):
-        super().__init__()
-        instance_id = os.getenv("GRAFANA_INSTANCE_ID")
-        api_key = os.getenv("GRAFANA_API_KEY")
-        self.url = os.getenv("GRAFANA_LOKI_URL")
-        self.auth = base64.b64encode(
-            f"{instance_id}:{api_key}".encode()).decode()
-
-    def emit(self, record):
-        try:
-            response = requests.post(
-                self.url,
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": f"Basic {self.auth}",
-                },
-                json={"streams": [{
-                    "stream": {
-                        "service": "ingestion",
-                        "level": record.levelname,
-                        "logger": record.name,
-                    },
-                    "values": [[str(int(time.time() * 1e9)), self.format(record)]]
-                }]},
-                timeout=5
-            )
-            print(f"Loki response: {response.status_code}")
-        except Exception as e:
-            print(f"Loki error: {e}")
+_provider = None
 
 
 def get_logger():
+    global _provider
     logger = logging.getLogger()
 
-    if not logger.handlers:
-        logger.setLevel(logging.INFO)
+    if any(isinstance(h, LoggingHandler) for h in logger.handlers):
+        return logger
 
-        formatter = logging.Formatter(
-            "%(asctime)s | %(levelname)s | %(module)s.%(funcName)s | %(message)s"
-        )
+    logger.setLevel(logging.INFO)
 
-        handler = logging.StreamHandler()
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
+    handler = logging.StreamHandler()
+    logger.addHandler(handler)
 
-        if os.getenv("GRAFANA_LOKI_URL"):
-            loki_handler = LokiHandler()
-            loki_handler.setFormatter(formatter)
-            logger.addHandler(loki_handler)
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT"):
+        resource = Resource.create({"service.name": "ingestion"})
+
+        _provider = LoggerProvider(resource=resource)
+
+        exporter = OTLPLogExporter()
+        _provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+
+        otel_handler = LoggingHandler(logger_provider=_provider)
+
+        logger.addHandler(otel_handler)
 
     return logger
+
+
+def shutdown_logger():
+    if _provider:
+        _provider.shutdown()

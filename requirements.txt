@@ -11,3 +11,6 @@ geopandas
 shapely
 pyyaml
 python-logging-loki
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http
+opentelemetry-api

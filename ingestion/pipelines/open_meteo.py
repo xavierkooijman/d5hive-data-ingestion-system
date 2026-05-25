@@ -56,7 +56,7 @@ def run(config):
 
         run_destinations(config, data)
     except Exception as e:
-        logger.error(f"Pipeline failed: {e}")
+        logger.error(f"Pipeline {config['pipeline_name']} failed: {e}")
         raise
     finally:
         toemail = clts.listtimes()
