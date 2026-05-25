@@ -286,6 +286,7 @@ services:
       - ${ENV_FILE_PATH:-.env}
     volumes:
       - ./otel/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+      - /:/hostfs:ro
     ports:
       - "4318:4318"
 
