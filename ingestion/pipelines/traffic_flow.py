@@ -2,7 +2,6 @@ from ingestion.sources.api import APIClient
 from utils.common import detect_environment
 from utils.destinations_executer import run_destinations
 from utils.mailer import send_email
-import clts_pcp as clts
 import logging
 from utils.common import resolve_secret
 from datetime import datetime, timezone
@@ -12,22 +11,13 @@ def run(config):
     try:
         logger = logging.getLogger(__name__)
 
-        tstart = clts.getts()
         logger.info("Pipeline Started")
-        clts.elapt["Pipeline Started"] = clts.deltat(tstart)
 
         env = detect_environment()
 
-        clts.elapt[f"Environment Detected: {env}"] = clts.deltat(tstart)
         logger.info(f"Environment detected: {env}")
 
-        clts.setcontext(
-            f'TomTom Traffic Flow Data Retrieval - Environment: {env}')
-
         current_timestamp = datetime.now(timezone.utc)
-
-        clts.elapt[f"Fetching data from API URL: {config["source"]["base_url"]}{config["source"]["endpoint"]}"] = clts.deltat(
-            tstart)
         logger.info(
             f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
@@ -38,10 +28,6 @@ def run(config):
         apiClient = APIClient(config["source"]["base_url"])
         raw_data = apiClient.get(
             config["source"]["endpoint"], params=config["source"].get("parameters", {}))
-
-        clts.elapt["Data fetched from API"] = clts.deltat(tstart)
-
-        clts.elapt["Normalizing and transforming data"] = clts.deltat(tstart)
 
         logger.info("Normalizing and transforming data")
 
@@ -62,11 +48,9 @@ def run(config):
             "geometry": flow_segment_data.get("coordinates")
         }]
 
-        clts.elapt["Data normalized and transformed"] = clts.deltat(tstart)
+        logger.info("Data normalized and transformed")
         logger.info("Data normalized and transformed")
 
-        clts.elapt[f"Inserting data into destinations: {', '.join([dest['name'] for dest in config['destinations']])}"] = clts.deltat(
-            tstart)
         logger.info(
             f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}")
 
@@ -75,6 +59,6 @@ def run(config):
         logger.error(f"Pipeline failed: {e}")
         raise
     finally:
-        toemail = clts.listtimes()
+        toemail = ""
         if config["email"]["send"]:
             send_email(env, config["email"], toemail)

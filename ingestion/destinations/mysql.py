@@ -1,6 +1,5 @@
 import pymysql
 from utils.destinations_registry import register_destination
-import clts_pcp as clts
 
 
 @register_destination("mysql")
