@@ -1,7 +1,6 @@
 requests
 python-dotenv
 resend
-clts_pcp
 crate
 pymysql
 cryptography
