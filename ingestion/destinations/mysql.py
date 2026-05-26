@@ -1,5 +1,8 @@
+import logging
 import pymysql
 from utils.destinations_registry import register_destination
+
+logger = logging.getLogger(__name__)
 
 
 @register_destination("mysql")
@@ -37,10 +40,13 @@ def insert_mysql(config, data):
         for row in data
     ]
 
-    print(
-        f"Inserting {len(values)} rows into MySQL table '{table}' at {config['host']}:{config['port']}")
     cursor.executemany(query, values)
 
     conn.commit()
+
+    inserted = cursor.rowcount
+    skipped = len(values) - inserted
+    if skipped > 0:
+        logger.warning(f"Skipped {skipped} duplicate rows in {table}")
     cursor.close()
     conn.close()
