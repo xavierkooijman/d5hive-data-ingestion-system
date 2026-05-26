@@ -17,17 +17,12 @@ def run(config):
 
         env = detect_environment()
 
-        
-
         current_timestamp = datetime.now(timezone.utc)
-        # timing instrumentation removed
         logger.info(
             f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
         apiClient = APIClient(config["source"]["base_url"])
         raw_data = apiClient.get(config["source"]["endpoint"])
-
-        
 
         maia_gdf = gpd.read_file("maia_polygon.geojson").to_crs(epsg=4326)
         maia_polygon = maia_gdf.geometry.iloc[0]
@@ -44,12 +39,8 @@ def run(config):
         ], geometry="geometry", crs="EPSG:4326")
 
         gdf_points = gdf_points.cx[minx:maxx, miny:maxy]
-        
 
         gdf_filtered = gdf_points[gdf_points.geometry.within(maia_polygon)]
-        
-
-        
 
         data = []
 
@@ -63,8 +54,6 @@ def run(config):
                 "longitude": row.geometry.x,
                 "tstamp": current_timestamp
             })
-
-        
 
         run_destinations(config, data)
     except Exception as e:

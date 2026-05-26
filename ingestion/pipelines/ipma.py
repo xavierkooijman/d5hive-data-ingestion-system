@@ -17,7 +17,6 @@ def run(config):
 
         logger.info(f"Environment detected: {env}")
 
-        # timing instrumentation removed
         logger.info(
             f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 

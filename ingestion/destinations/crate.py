@@ -1,5 +1,8 @@
+import logging
 from utils.destinations_registry import register_destination
 from crate import client
+
+logger = logging.getLogger(__name__)
 
 
 @register_destination("crate")
@@ -25,6 +28,7 @@ def insert_cratedb(config, data):
     query = f"""
         INSERT INTO {table} ({column_names})
         VALUES ({placeholders})
+        ON CONFLICT DO NOTHING
     """
 
     values = [
@@ -35,5 +39,11 @@ def insert_cratedb(config, data):
     cursor.executemany(query, values)
 
     connection.commit()
+
+    inserted = cursor.rowcount
+
+    skipped = len(values) - inserted
+    if skipped > 0:
+        logger.warning(f"Skipped {skipped} duplicate rows in {table}")
     cursor.close()
     connection.close()
