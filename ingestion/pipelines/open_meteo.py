@@ -14,18 +14,12 @@ def run(config):
 
         env = detect_environment()
 
-        
-
-        # timing instrumentation removed
-
         logger.info(
             f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
         apiClient = APIClient(config["source"]["base_url"])
         raw_data = apiClient.get(
             config["source"]["endpoint"], params=config["source"].get("parameters", {}))
-
-        
 
         current_weather = raw_data.get("current_weather", {})
 
@@ -39,8 +33,6 @@ def run(config):
             "wind_speed_kmh": current_weather.get("windspeed"),
             "wind_direction_degrees": current_weather.get("winddirection"),
         }]
-
-        
 
         run_destinations(config, data)
     except Exception as e:

@@ -28,7 +28,7 @@ def insert_mysql(config, data):
     placeholders = ",".join(["%s"] * len(columns))
 
     query = f"""
-        INSERT INTO {table} ({column_names})
+        INSERT IGNORE INTO {table} ({column_names})
         VALUES ({placeholders})
     """
 

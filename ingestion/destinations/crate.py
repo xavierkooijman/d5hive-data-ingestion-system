@@ -25,6 +25,7 @@ def insert_cratedb(config, data):
     query = f"""
         INSERT INTO {table} ({column_names})
         VALUES ({placeholders})
+        ON CONFLICT DO NOTHING
     """
 
     values = [
