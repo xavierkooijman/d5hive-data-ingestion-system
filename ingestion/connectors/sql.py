@@ -19,7 +19,7 @@ class SQLConnector:
             )
         elif config["type"] == "mysql":
             url = URL.create(
-                drivername="mysql+pyodbc",
+                drivername="mysql+pymysql",
                 username=config["username"],
                 password=config["password"],
                 host=config["host"],

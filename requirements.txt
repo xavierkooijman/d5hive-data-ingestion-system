@@ -3,7 +3,7 @@ python-dotenv
 resend
 crate
 pymysql
-psycopg
+psycopg[binary, pool]
 sqlalchemy
 cryptography
 flask

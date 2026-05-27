@@ -9,7 +9,7 @@ source:
   timezone: Europe/Lisbon
 
 destinations:
-  - type: postgres
+  - type: postgresql
     name: CrateDB
     host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
     port: 5432
@@ -40,7 +40,7 @@ destinations:
 save_raw: false
 
 email:
-  send: true
+  send: false
   from: cmmaiaxavier@gmail.com
   password: $EMAIL_PASSWORD
   api_key: $RESEND_API_KEY
