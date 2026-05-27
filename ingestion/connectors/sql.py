@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class SQLDestination:
+class SQLConnector:
     def __init__(self, config):
 
         if config["type"] == "postgresql":

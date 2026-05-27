@@ -1,6 +1,6 @@
 from ingestion.sources.api import APIClient
 from utils.common import detect_environment
-from utils.destinations_executer import run_destinations
+from utils.connectors import run_inserts
 from utils.mailer import send_email
 import logging
 from datetime import datetime, timezone
@@ -55,7 +55,7 @@ def run(config):
                 "tstamp": current_timestamp
             })
 
-        run_destinations(config, data)
+        run_inserts(config, data)
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
         raise

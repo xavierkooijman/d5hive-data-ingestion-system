@@ -2,7 +2,7 @@ from ingestion.sources.api import APIClient
 from ingestion.transformations.common import ms_to_kmh
 from ingestion.transformations.time import normalize_unix_timestamp
 from utils.common import detect_environment
-from utils.destinations_executer import run_destinations
+from utils.connectors import run_inserts
 from utils.mailer import send_email
 import logging
 from utils.common import resolve_secret
@@ -49,7 +49,7 @@ def run(config):
             "precipitation_mm": raw_data.get("rain", {}).get("1h", 0)
         }]
 
-        run_destinations(config, data)
+        run_inserts(config, data)
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
         raise
