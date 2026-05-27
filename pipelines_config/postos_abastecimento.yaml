@@ -7,9 +7,10 @@ source:
   endpoint: /arcgis/services/Visualizadores/PACVR/MapServer/WFSServer?request=GetFeature&service=WFS&typename=PACVR:Postos_Abastecimento&outputFormat=GEOJSON
 
 destinations:
-  - type: crate
+  - type: postgres
     name: CrateDB
-    host: https://cmmaia-xavier.aks1.westeurope.azure.cratedb.net:4200
+    host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
+    port: 5432
     database: crate
     table: postos_abastecimento
     username: admin

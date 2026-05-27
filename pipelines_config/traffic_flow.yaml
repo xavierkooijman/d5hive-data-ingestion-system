@@ -9,9 +9,10 @@ source:
     key: $TOM_TOM_API_KEY
 
 destinations:
-  - type: crate
+  - type: postgres
     name: CrateDB
-    host: https://cmmaia-xavier.aks1.westeurope.azure.cratedb.net:4200
+    host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
+    port: 5432
     database: crate
     table: tomtom_traffic_flow
     username: admin
