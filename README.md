@@ -1,6 +1,6 @@
 # Urban Data Ingestion Platform
 
-A lightweight, config-driven data ingestion system that collects real-time urban and environmental data from multiple APIs and loads it into one or more databases. It supports scheduled pipelines with Apache Airflow, multi-destination writes, email notifications, and observability via OpenTelemetry + Grafana.
+A config-driven data ingestion system that collects real-time urban and environmental data from multiple APIs and loads it into one or more databases. It supports scheduled pipelines with Apache Airflow, multi-destination writes, email notifications, and observability with OpenTelemetry + Grafana.
 
 ---
 
@@ -90,41 +90,16 @@ Each pipeline fetches data from an external API, normalises and transforms it, a
 ### Prerequisites
 
 - Docker and Docker Compose
-- A `.env` file (see below)
+- A `.env` file (see .env.example)
 
-### 1. Create your `.env` file
-
-```env
-# Airflow
-AIRFLOW_UID=5000
-FERNET_KEY=<generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())">
-AIRFLOW__API_AUTH__JWT_SECRET=your_jwt_secret
-
-# API keys
-TOM_TOM_API_KEY=...
-OPENWEATHERMAP_API_KEY=...
-
-# Destinations
-CRATEDB_PASSWORD=...
-AIVEN_PASSWORD=...
-TIDB_PASSWORD=...
-
-# Email
-EMAIL_PASSWORD=...          # Gmail app password (local SMTP)
-RESEND_API_KEY=...          # Resend API key (hosted)
-
-# Observability (optional)
-LOKI_AUTH=...
-GRAFANA_METRICS_AUTH=...
-OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-```
+````
 
 ### 2. Clone and configure
 
 ```bash
 git clone <repo-url> && cd <repo>
 cp .env.example .env  # fill in your secrets
-```
+````
 
 ### 3. Set up Python environment
 
