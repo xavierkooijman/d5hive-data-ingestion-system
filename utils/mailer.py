@@ -1,9 +1,26 @@
 import smtplib
+import logging
 from email.mime.text import MIMEText
 from utils.common import resolve_secret
 
+logger = logging.getLogger(__name__)
 
-def send_email(env, email_config, html_content):
+
+def send_email(email_config, html_content, env=None):
+    """Send an email with the given HTML content using the provided email configuration.
+    Args:
+        email_config (dict): A dictionary containing email configuration details such as:
+            - from: The sender's email address
+            - password: The sender's email password
+            - api_key: API key for email service (if using a service like Resend)
+            - subject: The subject of the email
+            - recipients: A list of recipient email addresses
+        html_content (str): The HTML content of the email.
+        env (str, optional): The environment in which to send the email. Defaults to None.
+
+    Returns:
+        None
+    """
 
     email_config = dict(email_config)
 
@@ -29,11 +46,11 @@ def send_email(env, email_config, html_content):
                 "html": html_content,
             })
 
-            print("Email sent successfully!")
-            print(f"Email ID: {result['id']}")
+            logger.info("Email sent successfully!")
+            logger.info(f"Email ID: {result['id']}")
 
         except Exception as e:
-            print(f"Error sending email: {e}")
+            logger.error(f"Error sending email: {e}")
             raise
 
     else:
@@ -58,8 +75,8 @@ def send_email(env, email_config, html_content):
                     msg.as_string()
                 )
 
-            print("Email sent!")
+            logger.info("Email sent successfully!")
 
         except Exception as e:
-            print(f"Error sending email: {e}")
+            logger.error(f"Error sending email: {e}")
             raise

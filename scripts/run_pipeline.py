@@ -8,6 +8,7 @@ from ingestion.pipelines.openweathermap import run as openweathermap_run
 from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
 from ingestion.pipelines.traffic_flow import run as traffic_flow_run
 from utils.logger import get_logger, shutdown_logger
+from utils.common import detect_environment
 
 load_dotenv()
 
@@ -26,16 +27,23 @@ def load_config(path):
 
 
 if __name__ == "__main__":
-    config_path = sys.argv[1]
+    try:
+        env = detect_environment()
 
-    config = load_config(config_path)
+        config_path = sys.argv[1]
 
-    pipeline_name = config["pipeline_name"]
+        config = load_config(config_path)
 
-    logger = get_logger()
+        pipeline_name = config["pipeline_name"]
 
-    pipeline = PIPELINES[pipeline_name]
+        logger = get_logger()
 
-    pipeline(config)
+        pipeline = PIPELINES[pipeline_name]
 
-    shutdown_logger()
+        pipeline(config)
+
+    except Exception as e:
+        logger.error(f"Error occurred while running pipeline: {e}")
+
+    finally:
+        shutdown_logger()
