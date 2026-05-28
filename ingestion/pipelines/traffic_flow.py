@@ -8,11 +8,9 @@ from datetime import datetime, timezone
 def run(config):
     logger = logging.getLogger(__name__)
 
-    logger.info("Pipeline Started")
+    logger.info(f"Pipeline {config['pipeline_name']} Started")
 
     current_timestamp = datetime.now(timezone.utc)
-    logger.info(
-        f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
     params = config["source"].get("parameters", {})
     if "key" in params:
@@ -22,9 +20,10 @@ def run(config):
     raw_data = apiClient.get(
         config["source"]["endpoint"], params=config["source"].get("parameters", {}))
 
-    logger.info("Normalizing and transforming data")
-
     flow_segment_data = raw_data.get("flowSegmentData", {})
+
+    logger.info(
+        f"Normalizing and transforming {len(flow_segment_data.get('flowSegments', []))} rows of data")
 
     data = [{
         "hostfeed": "hostfeed",
@@ -42,9 +41,5 @@ def run(config):
     }]
 
     logger.info("Data normalized and transformed")
-    logger.info("Data normalized and transformed")
-
-    logger.info(
-        f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}")
 
     run_inserts(config, data)

@@ -17,9 +17,15 @@ class APIClient:
         try:
             url = self._build_url(endpoint)
 
+            logger.info(
+                f"Making GET request to {url} with params: {params} and headers: {headers}")
+
             response = self.session.get(
                 url, params=params, headers=headers, timeout=self.timeout)
             response.raise_for_status()
+
+            logger.info(
+                f"GET request to {url} successful with status code {response.status_code}")
             return response.json()
         except requests.exceptions.Timeout:
             logger.error(f"Request timed out for {url}")

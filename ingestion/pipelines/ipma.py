@@ -8,25 +8,25 @@ import logging
 def run(config):
     logger = logging.getLogger(__name__)
 
-    logger.info("Starting IPMA Weather Station Data Retrieval pipeline")
-
-    logger.info(
-        f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
+    logger.info(f"Pipeline {config['pipeline_name']} Started")
 
     apiClient = APIClient(config["source"]["base_url"])
     raw_data = apiClient.get(config["source"]["endpoint"])
 
     logger.info(
-        f"{len(raw_data.get('features', []))} rows of data fetched successfully from API")
-
-    logger.info("Normalizing and transforming data")
+        f"Filtering {len(raw_data.get('features', []))} rows of data for station ID {config['source']['station_id']}")
 
     features = []
     for feature in raw_data.get("features", []):
         if feature['properties'].get('idEstacao') == config["source"]["station_id"]:
             features.append(feature)
 
+    logger.info(
+        f"Filtered down to {len(features)} rows of data for station ID {config['source']['station_id']}")
+
     data = []
+
+    logger.info("Normalizing and transforming data")
 
     for feature in features:
         props = feature.get("properties", {})
@@ -48,9 +48,6 @@ def run(config):
             "radiation_kjm2": props.get("radiacao")
         })
 
-    logger.info("Data normalized and transformed")
-
-    logger.info(
-        f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}")
+    logger.info(f"Data normalized and transformed")
 
     run_inserts(config, data)

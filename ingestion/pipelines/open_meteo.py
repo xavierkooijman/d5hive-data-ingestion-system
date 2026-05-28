@@ -7,7 +7,7 @@ import logging
 def run(config):
     logger = logging.getLogger(__name__)
 
-    logger.info("Pipeline Started")
+    logger.info(f"Pipeline {config['pipeline_name']} Started")
 
     logger.info(
         f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
@@ -15,6 +15,8 @@ def run(config):
     apiClient = APIClient(config["source"]["base_url"])
     raw_data = apiClient.get(
         config["source"]["endpoint"], params=config["source"].get("parameters", {}))
+
+    logger.info("Normalizing and transforming data")
 
     current_weather = raw_data.get("current_weather", {})
 
@@ -29,4 +31,5 @@ def run(config):
         "wind_direction_degrees": current_weather.get("winddirection"),
     }]
 
+    logger.info("Data normalized and transformed")
     run_inserts(config, data)

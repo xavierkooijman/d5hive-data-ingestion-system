@@ -49,8 +49,4 @@ class SQLConnector:
 
         with self.engine.begin() as conn:
             result = conn.execute(query, data)
-            if result.rowcount is None:
-                logger.warning(f"No rows were inserted into table: {table}")
-            else:
-                logger.info(
-                    f"Inserted {result.rowcount} rows into table: {table}")
+            return result.rowcount

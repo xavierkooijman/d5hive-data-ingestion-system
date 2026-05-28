@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 import zoneinfo
 
 
-def normalize_string_timestamp(timestamp, tz):
+def normalize_string_timestamp(timestamp: str, tz: str) -> datetime:
     """
     Convert a local timestamp string to UTC ISO 8601.
 
@@ -22,12 +22,12 @@ def normalize_string_timestamp(timestamp, tz):
     return dt.astimezone(timezone.utc)
 
 
-def normalize_unix_timestamp(unix_timestamp):
+def normalize_unix_timestamp(unix_timestamp: float | int) -> datetime:
     """
     Convert a Unix timestamp (int/float, always UTC) to UTC ISO 8601 datetime object.
 
     Args:
-        unix_timestamp: Unix timestamp as int or float e.g. 1711411800
+        unix_timestamp (float | int): Unix timestamp as int or float e.g. 1711411800
     Returns:
         datetime: timezone-aware UTC datetime e.g. datetime(2026, 5, 23, 17, 30, tzinfo=timezone.utc)
     """

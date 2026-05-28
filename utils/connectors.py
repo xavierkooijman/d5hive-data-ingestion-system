@@ -13,7 +13,10 @@ CONNECTORS = {
 def run_inserts(config, data):
     """Run insert operations for all configured destinations.
     Args:
-        config (dict): The pipeline configuration containing destination details.
+        config (dict): The pipeline configuration containing destination details:
+            - name: The name of the destination
+            - type: The type of the destination (e.g., "postgresql", "mysql")
+            - connection details (e.g., host, port, database, user, password)
         data (list): A list of dictionaries representing the data to be inserted.
     """
 
@@ -32,4 +35,10 @@ def run_inserts(config, data):
             continue
 
         destination = destination_class(dest_config)
-        destination.insert(dest["table"], data)
+        rowcount = destination.insert(dest["table"], data)
+        if rowcount is None:
+            logger.warning(
+                f"No rows were inserted into table: {dest['table']} for destination: {dest['name']}")
+        else:
+            logger.info(
+                f"Inserted {rowcount} rows into table: {dest['table']} for destination: {dest['name']}")

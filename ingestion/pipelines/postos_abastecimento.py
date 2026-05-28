@@ -9,14 +9,15 @@ from shapely.geometry import Point
 def run(config):
     logger = logging.getLogger(__name__)
 
-    logger.info("Pipeline Started")
+    logger.info(f"Pipeline {config['pipeline_name']} Started")
 
     current_timestamp = datetime.now(timezone.utc)
-    logger.info(
-        f"Fetching data from API URL: {config['source']['base_url']}{config['source']['endpoint']}")
 
     apiClient = APIClient(config["source"]["base_url"])
     raw_data = apiClient.get(config["source"]["endpoint"])
+
+    logger.info(
+        f"Filtering {len(raw_data.get('features', []))} rows of data for Maia region polygon")
 
     maia_gdf = gpd.read_file("maia_polygon.geojson").to_crs(epsg=4326)
     maia_polygon = maia_gdf.geometry.iloc[0]
@@ -36,7 +37,12 @@ def run(config):
 
     gdf_filtered = gdf_points[gdf_points.geometry.within(maia_polygon)]
 
+    logger.info(
+        f"Filtered down to {len(gdf_filtered)} rows of data for Maia region polygon")
+
     data = []
+
+    logger.info("Normalizing and transforming data")
 
     for idx, row in gdf_filtered.iterrows():
         data.append({
@@ -48,5 +54,7 @@ def run(config):
             "longitude": row.geometry.x,
             "tstamp": current_timestamp
         })
+
+    logger.info(f"Data normalized and transformed")
 
     run_inserts(config, data)
