@@ -1,7 +1,7 @@
 from ingestion.sources.api import APIClient
 from ingestion.transformations.time import normalize_unix_timestamp
 from utils.common import detect_environment
-from utils.destinations_executer import run_destinations
+from utils.connectors import run_inserts
 from utils.mailer import send_email
 import logging
 
@@ -34,7 +34,7 @@ def run(config):
             "wind_direction_degrees": current_weather.get("winddirection"),
         }]
 
-        run_destinations(config, data)
+        run_inserts(config, data)
     except Exception as e:
         logger.error(f"Pipeline {config['pipeline_name']} failed: {e}")
         raise

@@ -1,6 +1,6 @@
 from ingestion.sources.api import APIClient
 from utils.common import detect_environment
-from utils.destinations_executer import run_destinations
+from utils.connectors import run_inserts
 from utils.mailer import send_email
 import logging
 from utils.common import resolve_secret
@@ -54,7 +54,7 @@ def run(config):
         logger.info(
             f"Inserting {len(data)} rows into destinations: {', '.join([dest['name'] for dest in config['destinations']])}")
 
-        run_destinations(config, data)
+        run_inserts(config, data)
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
         raise
