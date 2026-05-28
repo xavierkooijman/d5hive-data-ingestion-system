@@ -40,7 +40,7 @@ destinations:
 save_raw: false
 
 email:
-  send: false
+  send: true
   from: cmmaiaxavier@gmail.com
   password: $EMAIL_PASSWORD
   api_key: $RESEND_API_KEY

@@ -22,6 +22,11 @@ def send_email(email_config, html_content, env=None):
         None
     """
 
+    if email_config.get("send", False) is False:
+        logger.info(
+            "Email sending is disabled in the configuration. Skipping email.")
+        return
+
     email_config = dict(email_config)
 
     if "password" in email_config:

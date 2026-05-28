@@ -9,6 +9,7 @@ from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento
 from ingestion.pipelines.traffic_flow import run as traffic_flow_run
 from utils.logger import get_logger, shutdown_logger
 from utils.common import detect_environment
+from utils.mailer import send_email
 
 load_dotenv()
 
@@ -43,7 +44,10 @@ if __name__ == "__main__":
         pipeline(config)
 
     except Exception as e:
-        logger.error(f"Error occurred while running pipeline: {e}")
+        logger.error(
+            f"Error occurred while running pipeline {pipeline_name}: {e}")
+        send_email(config.get("email", {}),
+                   f"<p>Error occurred while running pipeline {pipeline_name}: {e}</p>", env=env)
 
     finally:
         shutdown_logger()
