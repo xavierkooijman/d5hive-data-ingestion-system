@@ -1,12 +1,12 @@
-# Urban Data Ingestion Platform
+# Data Ingestion Modular System
 
-A config-driven data ingestion system that collects real-time urban and environmental data from multiple APIs and loads it into one or more databases. It supports scheduled pipelines with Apache Airflow, multi-destination writes, email notifications, and observability with OpenTelemetry + Grafana.
+A config-driven data ingestion system that collects traffic and weather data from multiple APIs and loads it into one or more databases. It supports scheduled pipelines with Apache Airflow, multi-destination writes, email notifications, and observability with OpenTelemetry + Grafana.
 
 ---
 
 ## What It Does
 
-Each pipeline fetches data from an external API, normalises and transforms it, and writes it to one or more destinations. A post-run email report is sent on success or failure.
+Each pipeline fetches data from an external API, normalizes and transforms it, and writes it to one or more destinations. A post-run email report is sent on success or failure.
 
 **Current pipelines:**
 
