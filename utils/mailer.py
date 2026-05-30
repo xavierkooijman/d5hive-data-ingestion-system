@@ -16,7 +16,7 @@ def send_email(email_config, html_content, env=None):
             - subject: The subject of the email
             - recipients: A list of recipient email addresses
         html_content (str): The HTML content of the email.
-        env (str, optional): The environment in which to send the email. Defaults to None.
+        env (str, optional): The environment in which pipeline is ran. Defaults to None.
 
     Returns:
         None
@@ -56,7 +56,6 @@ def send_email(email_config, html_content, env=None):
 
         except Exception as e:
             logger.error(f"Error sending email: {e}")
-            raise
 
     else:
         SMTP_SERVER = "smtp.gmail.com"
@@ -84,4 +83,3 @@ def send_email(email_config, html_content, env=None):
 
         except Exception as e:
             logger.error(f"Error sending email: {e}")
-            raise
