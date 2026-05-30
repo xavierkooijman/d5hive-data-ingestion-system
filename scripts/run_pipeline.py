@@ -2,11 +2,7 @@ import sys
 import yaml
 from dotenv import load_dotenv
 
-from ingestion.pipelines.ipma import run as ipma_run
-from ingestion.pipelines.open_meteo import run as open_meteo_run
-from ingestion.pipelines.openweathermap import run as openweathermap_run
-from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
-from ingestion.pipelines.traffic_flow import run as traffic_flow_run
+from ingestion.pipelines.ipma import IPMAPipeline
 from utils.logger import get_logger, shutdown_logger
 from utils.common import detect_environment
 from utils.mailer import send_email
@@ -14,11 +10,7 @@ from utils.mailer import send_email
 load_dotenv()
 
 PIPELINES = {
-    "ipma_ingestion": ipma_run,
-    "open_meteo_ingestion": open_meteo_run,
-    "openweathermap_ingestion": openweathermap_run,
-    "postos_abastecimento_ingestion": postos_abastecimento_run,
-    "traffic_flow_ingestion": traffic_flow_run
+    "ipma_ingestion": IPMAPipeline,
 }
 
 
@@ -41,7 +33,7 @@ if __name__ == "__main__":
 
         pipeline = PIPELINES[pipeline_name]
 
-        pipeline(config)
+        pipeline(config).run()
 
     except Exception as e:
         logger.error(
