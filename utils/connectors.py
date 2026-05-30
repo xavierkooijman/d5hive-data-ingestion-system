@@ -10,7 +10,7 @@ CONNECTORS = {
 }
 
 
-def run_inserts(config, data):
+def run_inserts(config: dict, data: list):
     """Run insert operations for all configured destinations.
     Args:
         config (dict): The pipeline configuration containing destination details:

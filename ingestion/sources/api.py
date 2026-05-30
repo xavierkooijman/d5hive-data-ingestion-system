@@ -5,15 +5,29 @@ logger = logging.getLogger(__name__)
 
 
 class APIClient:
-    def __init__(self, base_url, timeout=10):
+    def __init__(self, base_url: str, timeout: int = 10):
         self.base_url = base_url.rstrip('/')
         self.timeout = timeout
         self.session = requests.Session()
 
-    def _build_url(self, endpoint):
+    def _build_url(self, endpoint: str) -> str:
+        """Construct the full URL for the API request.
+        Args:
+            endpoint (str): The API endpoint to append to the base URL.
+        Returns:
+            str: The full API URL.
+        """
         return f"{self.base_url}/{endpoint.lstrip('/')}"
 
-    def get(self, endpoint, params=None, headers=None):
+    def get(self, endpoint: str, params: dict = None, headers: dict = None) -> dict:
+        """Make a GET request to the specified API endpoint.
+        Args:
+            endpoint (str): The API endpoint to request.
+            params (dict, optional): Query parameters for the request.
+            headers (dict, optional): Headers for the request.
+        Returns:
+            dict: The JSON response from the API or an error message.
+        """
         try:
             url = self._build_url(endpoint)
 

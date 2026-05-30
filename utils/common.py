@@ -11,7 +11,7 @@ def detect_environment():
         return "linux"
 
 
-def resolve_secret(value):
+def resolve_secret(value: str) -> str:
     if value.startswith("$"):
         import os
         return os.getenv(value[1:])

@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class SQLConnector:
-    def __init__(self, config):
+    def __init__(self, config: dict):
 
         if config["type"] == "postgresql":
             url = URL.create(
@@ -33,7 +33,14 @@ class SQLConnector:
 
         self.engine = create_engine(url, connect_args=connection_args)
 
-    def insert(self, table, data):
+    def insert(self, table: str, data: list) -> int | None:
+        """Insert data into the specified table.
+        Args:
+            table (str): The name of the table into which to insert data.
+            data (list): A list of dictionaries representing the rows and data to insert.
+        Returns:
+            int | None: The number of rows inserted, or None if no data is provided.
+        """
         if not data:
             return
 
