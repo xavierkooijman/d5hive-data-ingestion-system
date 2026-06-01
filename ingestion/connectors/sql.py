@@ -1,5 +1,6 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, insert, Column, MetaData, Table
 from sqlalchemy.engine import URL
+from sqlalchemy.dialects import postgresql, mysql
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,29 +10,25 @@ class SQLConnector:
     def __init__(self, config: dict):
 
         if config["type"] == "postgresql":
-            url = URL.create(
-                drivername="postgresql+psycopg",
-                username=config["username"],
-                password=config["password"],
-                host=config["host"],
-                port=config["port"],
-                database=config["database"],
-            )
+            drivername = "postgresql+psycopg"
         elif config["type"] == "mysql":
-            url = URL.create(
-                drivername="mysql+pymysql",
-                username=config["username"],
-                password=config["password"],
-                host=config["host"],
-                port=config["port"],
-                database=config["database"],
-            )
+            drivername = "mysql+pymysql"
+
+        url = URL.create(
+            drivername=drivername,
+            username=config["username"],
+            password=config["password"],
+            host=config["host"],
+            port=config["port"],
+            database=config["database"],
+        )
 
         connection_args = {}
         if "certificate" in config:
             connection_args["ssl"] = {"ca": config["certificate"]}
 
         self.engine = create_engine(url, connect_args=connection_args)
+        self.metadata = MetaData()
 
     def insert(self, table: str, data: list) -> int | None:
         """Insert data into the specified table.
@@ -45,15 +42,21 @@ class SQLConnector:
             return
 
         columns = list(data[0].keys())
-        column_names = ",".join(columns)
-        placeholders = ",".join([f":{col}" for col in columns])
 
-        query = text(f"""
-            INSERT INTO {table} ({column_names})
-            VALUES ({placeholders})
-            ON CONFLICT DO NOTHING
-        """)
+        table_obj = Table(table, self.metadata, *
+                          [Column(col) for col in columns])
+
+        dialect = self.engine.dialect.name
+        if dialect == "postgresql":
+            stmt = postgresql.insert(table_obj).values(
+                data).on_conflict_do_nothing()
+        elif dialect == "mysql":
+            stmt = mysql.insert(table_obj).values(data).prefix_with("IGNORE")
+        else:
+            logger.warning(
+                f"Unsupported database dialect '{dialect}'. Defaulting to standard insert without conflict handling.")
+            stmt = insert(table_obj).values(data)
 
         with self.engine.begin() as conn:
-            result = conn.execute(query, data)
+            result = conn.execute(stmt)
             return result.rowcount

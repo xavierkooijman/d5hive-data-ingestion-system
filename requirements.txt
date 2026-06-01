@@ -5,6 +5,7 @@ crate
 pymysql
 psycopg[binary, pool]
 sqlalchemy
+sqlalchemy-cratedb
 cryptography
 flask
 gunicorn
