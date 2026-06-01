@@ -1,4 +1,5 @@
 from ingestion.connectors.sql import SQLConnector
+from ingestion.connectors.cratedb import CrateDBConnector
 from utils.common import resolve_secret
 import logging
 
@@ -7,6 +8,7 @@ logger = logging.getLogger(__name__)
 CONNECTORS = {
     "postgresql": SQLConnector,
     "mysql": SQLConnector,
+    "cratedb": CrateDBConnector
 }
 
 

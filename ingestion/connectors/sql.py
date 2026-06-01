@@ -13,8 +13,6 @@ class SQLConnector:
             drivername = "postgresql+psycopg"
         elif config["type"] == "mysql":
             drivername = "mysql+pymysql"
-        elif config["type"] == "cratedb":
-            drivername = "cratedb+psycopg"
 
         url = URL.create(
             drivername=drivername,
