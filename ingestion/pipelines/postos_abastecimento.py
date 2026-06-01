@@ -1,60 +1,48 @@
-from ingestion.sources.api import APIClient
-from utils.connectors import run_inserts
-import logging
 from datetime import datetime, timezone
 import geopandas as gpd
 from shapely.geometry import Point
+from ingestion.pipelines.base import BaseETLPipeline
 
 
-def run(config):
-    logger = logging.getLogger(__name__)
+class PostosAbastecimentoPipeline(BaseETLPipeline):
+    def validate_data(self, data):
+        return data
 
-    logger.info(f"Pipeline {config['pipeline_name']} Started")
+    def transform_data(self, data):
+        self.logger.info(
+            f"Filtering {len(data.get('features', []))} rows of data for Maia region polygon")
 
-    current_timestamp = datetime.now(timezone.utc)
+        maia_gdf = gpd.read_file("maia_polygon.geojson").to_crs(epsg=4326)
+        maia_polygon = maia_gdf.geometry.iloc[0]
+        minx, miny, maxx, maxy = maia_polygon.bounds
 
-    apiClient = APIClient(config["source"]["base_url"])
-    raw_data = apiClient.get(config["source"]["endpoint"])
+        gdf_points = gpd.GeoDataFrame([
+            {
+                "globalid": feature["properties"]["globalid"].strip("{}"),
+                "marca": feature["properties"]["Marca"],
+                "geometry": Point(feature["geometry"]["coordinates"])
 
-    logger.info(
-        f"Filtering {len(raw_data.get('features', []))} rows of data for Maia region polygon")
+            }
+            for feature in data.get("features", [])
+        ], geometry="geometry", crs="EPSG:4326")
 
-    maia_gdf = gpd.read_file("maia_polygon.geojson").to_crs(epsg=4326)
-    maia_polygon = maia_gdf.geometry.iloc[0]
-    minx, miny, maxx, maxy = maia_polygon.bounds
+        gdf_points = gdf_points.cx[minx:maxx, miny:maxy]
+        gdf_filtered = gdf_points[gdf_points.geometry.within(maia_polygon)]
 
-    gdf_points = gpd.GeoDataFrame([
-        {
-            "globalid": feature["properties"]["globalid"].strip("{}"),
-            "marca": feature["properties"]["Marca"],
-            "geometry": Point(feature["geometry"]["coordinates"])
+        self.logger.info(
+            f"Filtered down to {len(gdf_filtered)} rows of data for Maia region polygon")
 
-        }
-        for feature in raw_data["features"]
-    ], geometry="geometry", crs="EPSG:4326")
+        current_timestamp = datetime.now(timezone.utc)
+        transformed_data = []
 
-    gdf_points = gdf_points.cx[minx:maxx, miny:maxy]
-
-    gdf_filtered = gdf_points[gdf_points.geometry.within(maia_polygon)]
-
-    logger.info(
-        f"Filtered down to {len(gdf_filtered)} rows of data for Maia region polygon")
-
-    data = []
-
-    logger.info("Normalizing and transforming data")
-
-    for idx, row in gdf_filtered.iterrows():
-        data.append({
-            "globalId": row["globalid"],
-            "hostfeed": "hostfeed",
-            "source": config["source"]["name"],
-            "brand": row["marca"],
-            "latitude": row.geometry.y,
-            "longitude": row.geometry.x,
-            "tstamp": current_timestamp
-        })
-
-    logger.info(f"Data normalized and transformed")
-
-    run_inserts(config, data)
+        for idx, row in gdf_filtered.iterrows():
+            transformed_data.append({
+                "globalId": row["globalid"],
+                "hostfeed": "hostfeed",
+                "source": self.config["source"]["name"],
+                "brand": row["marca"],
+                "latitude": row.geometry.y,
+                "longitude": row.geometry.x,
+                "tstamp": current_timestamp
+            })
+        return transformed_data
