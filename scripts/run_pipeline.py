@@ -3,6 +3,10 @@ import yaml
 from dotenv import load_dotenv
 
 from ingestion.pipelines.ipma import IPMAPipeline
+from ingestion.pipelines.open_meteo import OpenMeteoPipeline
+from ingestion.pipelines.openweathermap import OpenWeatherMapPipeline
+from ingestion.pipelines.postos_abastecimento import PostosAbastecimentoPipeline
+from ingestion.pipelines.traffic_flow import TrafficFlowPipeline
 from utils.logger import get_logger, shutdown_logger
 from utils.common import detect_environment
 from utils.mailer import send_email
@@ -11,6 +15,10 @@ load_dotenv()
 
 PIPELINES = {
     "ipma_ingestion": IPMAPipeline,
+    "open_meteo_ingestion": OpenMeteoPipeline,
+    "openweathermap_ingestion": OpenWeatherMapPipeline,
+    "postos_abastecimento_ingestion": PostosAbastecimentoPipeline,
+    "traffic_flow_ingestion": TrafficFlowPipeline
 }
 
 
