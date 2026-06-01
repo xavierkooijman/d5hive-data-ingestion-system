@@ -11,7 +11,7 @@ source:
     timeformat: unixtime
 
 destinations:
-  - type: postgresql
+  - type: cratedb
     name: CrateDB
     host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
     port: 5432

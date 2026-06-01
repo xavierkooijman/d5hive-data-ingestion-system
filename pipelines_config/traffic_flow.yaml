@@ -9,7 +9,7 @@ source:
     key: $TOM_TOM_API_KEY
 
 destinations:
-  - type: postgresql
+  - type: cratedb
     name: CrateDB
     host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
     port: 5432
