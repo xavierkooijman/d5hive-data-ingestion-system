@@ -11,9 +11,9 @@ class BaseETLPipeline(ABC):
         self.config = config
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def fetch_data(self):
+    def extract_data(self):
         api_client = APIClient(self.config["source"]["base_url"])
-        return api_client.get(self.config["source"]["endpoint"])
+        return api_client.get(self.config["source"]["endpoint"], params=self.config["source"].get("parameters", {}), headers=self.config["source"].get("headers", {}))
 
     @abstractmethod
     def validate_data(self, data):
@@ -28,7 +28,7 @@ class BaseETLPipeline(ABC):
 
     def run(self):
         self.logger.info(f"Pipeline {self.config['pipeline_name']} Started")
-        data = self.fetch_data()
+        data = self.extract_data()
         validated_data = self.validate_data(data)
         self.logger.info("Normalizing and transforming data")
         transformed_data = self.transform_data(validated_data)
