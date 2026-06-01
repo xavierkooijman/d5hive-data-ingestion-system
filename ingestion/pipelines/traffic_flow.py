@@ -1,3 +1,4 @@
+from ingestion.sources.api import APIClient
 from datetime import datetime, timezone
 from ingestion.pipelines.base import BaseETLPipeline
 
