@@ -1,5 +1,6 @@
 import logging
 import requests
+from utils.common import resolve_secret
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class APIClient:
         """Make a GET request to the specified API endpoint.
         Args:
             endpoint (str): The API endpoint to request.
-            params (dict, optional): Query parameters for the request.
+            params (dict, optional): Parameters for the request.
             headers (dict, optional): Headers for the request.
         Returns:
             dict: The JSON response from the API or an error message.
@@ -32,7 +33,10 @@ class APIClient:
             url = self._build_url(endpoint)
 
             logger.info(
-                f"Making GET request to {url} with params: {params} and headers: {headers}")
+                f"Making GET request to {url}")
+
+            params = {k: resolve_secret(v) if isinstance(
+                v, str) else v for k, v in params.items()}
 
             response = self.session.get(
                 url, params=params, headers=headers, timeout=self.timeout)
