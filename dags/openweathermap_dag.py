@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import yaml
 from utils.logger import get_logger
-from ingestion.pipelines.openweathermap import run as openweathermap_run
+from ingestion.pipelines.openweathermap import OpenWeatherMapPipeline
 
 
 def run_openweathermap():
@@ -12,7 +12,7 @@ def run_openweathermap():
         config = yaml.safe_load(f)
 
     get_logger()
-    openweathermap_run(config)
+    OpenWeatherMapPipeline(config).run()
 
 
 with DAG(
