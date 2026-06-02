@@ -26,7 +26,7 @@ exporters:
     headers:
       Authorization: "Basic ${GRAFANA_METRICS_AUTH}"
   otlp_http/traces:
-    endpoint: "https://tempo-prod-31-prod-eu-west-6.grafana.net/tempo"
+    endpoint: "https://otlp-gateway-prod-eu-west-6.grafana.net/otlp"
     headers:
       Authorization: "Basic ${GRAFANA_TRACES_AUTH}"
 
