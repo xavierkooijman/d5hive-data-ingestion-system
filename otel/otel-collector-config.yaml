@@ -25,6 +25,10 @@ exporters:
     endpoint: "https://prometheus-prod-68-prod-eu-west-6.grafana.net/api/prom/push"
     headers:
       Authorization: "Basic ${GRAFANA_METRICS_AUTH}"
+  otlp_http/traces:
+    endpoint: "https://tempo-prod-31-prod-eu-west-6.grafana.net/tempo"
+    headers:
+      Authorization: "Basic ${GRAFANA_TRACES_AUTH}"
 
 service:
   pipelines:
@@ -34,3 +38,6 @@ service:
     metrics:
       receivers: [hostmetrics]
       exporters: [prometheusremotewrite/metrics]
+    traces:
+      receivers: [otlp]
+      exporters: [debug, otlp_http/traces]
