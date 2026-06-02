@@ -1,15 +1,16 @@
 from ingestion.sources.api import APIClient
-from utils.common import detect_environment, resolve_secret
-from ingestion.sources.api import APIClient
 from utils.connectors import run_inserts
+from utils.tracer import get_tracer
 import logging
 from abc import ABC, abstractmethod
+from opentelemetry import trace
 
 
 class BaseETLPipeline(ABC):
     def __init__(self, config):
         self.config = config
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.tracer = get_tracer()
 
     def extract_data(self):
         api_client = APIClient(self.config["source"]["base_url"])
@@ -27,12 +28,35 @@ class BaseETLPipeline(ABC):
         run_inserts(self.config, transformed_data)
 
     def run(self):
-        self.logger.info(f"Pipeline {self.config['pipeline_name']} Started")
-        data = self.extract_data()
-        validated_data = self.validate_data(data)
-        self.logger.info("Normalizing and transforming data")
-        transformed_data = self.transform_data(validated_data)
-        self.logger.info("Data normalized and transformed")
-        self.load_data(transformed_data)
-        self.logger.info(
-            f"Pipeline {self.config['pipeline_name']} completed successfully")
+        pipeline_name = self.config.get("pipeline_name")
+        self.logger.info(f"Pipeline {pipeline_name} Started")
+
+        with self.tracer.start_as_current_span(f"{pipeline_name}") as root_span:
+            root_span.set_attribute("pipeline.name", pipeline_name)
+            root_span.set_attribute(
+                "pipeline.source", self.config["source"]["name"])
+
+            try:
+                with self.tracer.start_as_current_span("extract"):
+                    data = self.extract_data()
+
+                with self.tracer.start_as_current_span("validate"):
+                    validated_data = self.validate_data(data)
+
+                with self.tracer.start_as_current_span("transform") as span:
+                    self.logger.info("Normalizing and transforming data")
+                    transformed_data = self.transform_data(validated_data)
+                    span.set_attribute("data.records_transformed",
+                                       len(transformed_data))
+                    self.logger.info("Data normalized and transformed")
+
+                with self.tracer.start_as_current_span("load"):
+                    self.load_data(transformed_data)
+
+            except Exception as e:
+                root_span.record_exception(e)
+                root_span.set_status(trace.status.Status(
+                    trace.status.StatusCode.ERROR, str(e)))
+                raise
+
+        self.logger.info(f"Pipeline {pipeline_name} completed successfully")

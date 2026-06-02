@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import yaml
 from utils.logger import get_logger
-from ingestion.pipelines.postos_abastecimento import run as postos_abastecimento_run
+from ingestion.pipelines.postos_abastecimento import PostosAbastecimentoPipeline
 
 
 def run_postos_abastecimento():
@@ -12,7 +12,7 @@ def run_postos_abastecimento():
         config = yaml.safe_load(f)
 
     get_logger()
-    postos_abastecimento_run(config)
+    PostosAbastecimentoPipeline(config).run()
 
 
 with DAG(

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import yaml
 from utils.logger import get_logger
-from ingestion.pipelines.ipma import run as ipma_run
+from ingestion.pipelines.ipma import IPMAPipeline
 
 
 def run_ipma():
@@ -12,7 +12,7 @@ def run_ipma():
         config = yaml.safe_load(f)
 
     get_logger()
-    ipma_run(config)
+    IPMAPipeline(config).run()
 
 
 with DAG(

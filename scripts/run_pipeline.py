@@ -10,6 +10,7 @@ from ingestion.pipelines.traffic_flow import TrafficFlowPipeline
 from utils.logger import get_logger, shutdown_logger
 from utils.common import detect_environment
 from utils.mailer import send_email
+from utils.tracer import shutdown_tracer
 
 load_dotenv()
 
@@ -51,3 +52,4 @@ if __name__ == "__main__":
 
     finally:
         shutdown_logger()
+        shutdown_tracer()

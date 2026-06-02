@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import yaml
 from utils.logger import get_logger
-from ingestion.pipelines.traffic_flow import run as traffic_flow_run
+from ingestion.pipelines.traffic_flow import TrafficFlowPipeline
 
 
 def run_traffic_flow():
@@ -12,7 +12,7 @@ def run_traffic_flow():
         config = yaml.safe_load(f)
 
     get_logger()
-    traffic_flow_run(config)
+    TrafficFlowPipeline(config).run()
 
 
 with DAG(

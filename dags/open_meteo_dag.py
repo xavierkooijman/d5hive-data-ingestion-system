@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import yaml
 from utils.logger import get_logger
-from ingestion.pipelines.open_meteo import run as open_meteo_run
+from ingestion.pipelines.open_meteo import OpenMeteoPipeline
 
 
 def run_open_meteo():
@@ -12,7 +12,7 @@ def run_open_meteo():
         config = yaml.safe_load(f)
 
     get_logger()
-    open_meteo_run(config)
+    OpenMeteoPipeline(config).run()
 
 
 with DAG(
