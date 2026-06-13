@@ -4,6 +4,7 @@ from utils.tracer import get_tracer
 import logging
 from abc import ABC, abstractmethod
 from opentelemetry import trace
+from pydantic import ValidationError
 
 
 class BaseETLPipeline(ABC):
@@ -17,7 +18,7 @@ class BaseETLPipeline(ABC):
         return api_client.get(self.config["source"]["endpoint"], params=self.config["source"].get("parameters", {}), headers=self.config["source"].get("headers", {}))
 
     @abstractmethod
-    def validate_data(self, data):
+    def validate_raw_schema(self, data):
         pass
 
     @abstractmethod
@@ -40,12 +41,18 @@ class BaseETLPipeline(ABC):
                 with self.tracer.start_as_current_span("extract"):
                     data = self.extract_data()
 
-                with self.tracer.start_as_current_span("validate"):
-                    validated_data = self.validate_data(data)
+                with self.tracer.start_as_current_span("validate raw schema"):
+                    try:
+                        validated_raw_schema = self.validate_raw_schema(data)
+                    except ValidationError as e:
+                        self.logger.error(
+                            f"Data validation failed for pipeline {pipeline_name}: {e}")
+                        raise
 
                 with self.tracer.start_as_current_span("transform") as span:
                     self.logger.info("Normalizing and transforming data")
-                    transformed_data = self.transform_data(validated_data)
+                    transformed_data = self.transform_data(
+                        validated_raw_schema)
                     span.set_attribute("data.records_transformed",
                                        len(transformed_data))
                     self.logger.info("Data normalized and transformed")
