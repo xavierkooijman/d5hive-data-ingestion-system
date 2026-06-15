@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
+from typing import Optional
 
 
 class OpenWeatherMapCoord(BaseModel):
@@ -40,6 +41,6 @@ class OpenWeatherMapRawResponse(BaseModel):
     visibility: int
     wind: OpenWeatherMapWind
     clouds: OpenWeatherMapClouds
-    rain: OpenWeatherMapRain
+    rain: Optional[OpenWeatherMapRain] = None
     dt: int
     model_config = ConfigDict(extra="allow")
