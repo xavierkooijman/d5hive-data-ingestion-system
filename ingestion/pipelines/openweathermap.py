@@ -1,10 +1,12 @@
 from ingestion.transformations.common import ms_to_kmh
 from ingestion.transformations.time import normalize_unix_timestamp
 from ingestion.pipelines.base import BaseETLPipeline
+from ingestion.models.openweathermap import OpenWeatherMapRawResponse
 
 
 class OpenWeatherMapPipeline(BaseETLPipeline):
-    def validate_data(self, data):
+    def validate_raw_schema(self, data):
+        OpenWeatherMapRawResponse.model_validate(data)
         return data
 
     def transform_data(self, data):
