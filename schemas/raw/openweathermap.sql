@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS openweathermap (
     hostfeed VARCHAR(50),
     source VARCHAR(50),
-    tstamp TIMESTAMPZ,
+    tstamp TIMESTAMPTZ,
     latitude DOUBLE,
     longitude DOUBLE,
     temperature_celsius REAL,

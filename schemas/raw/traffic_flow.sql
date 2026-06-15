@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS tomtom_traffic_flow (
     hostfeed VARCHAR(50),
     source VARCHAR(50),
     frc VARCHAR(10),
-    tstamp TIMESTAMPZ,
+    tstamp TIMESTAMPTZ,
     current_speed_kmh REAL,
     free_flow_speed_kmh REAL,
     current_travel_time_s REAL,
