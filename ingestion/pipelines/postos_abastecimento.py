@@ -2,10 +2,12 @@ from datetime import datetime, timezone
 import geopandas as gpd
 from shapely.geometry import Point
 from ingestion.pipelines.base import BaseETLPipeline
+from ingestion.models.postos_abastecimento import PostosAbastecimentoRawResponse
 
 
 class PostosAbastecimentoPipeline(BaseETLPipeline):
-    def validate_data(self, data):
+    def validate_raw_schema(self, data):
+        PostosAbastecimentoRawResponse.model_validate(data)
         return data
 
     def transform_data(self, data):

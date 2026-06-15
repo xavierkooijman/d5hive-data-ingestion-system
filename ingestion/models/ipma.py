@@ -5,6 +5,7 @@ from typing import Literal
 class IPMAGeometry(BaseModel):
     type: Literal["Point"]
     coordinates: list[float]
+    model_config = ConfigDict(extra="allow")
 
 
 class IPMAFeatureProperties(BaseModel):

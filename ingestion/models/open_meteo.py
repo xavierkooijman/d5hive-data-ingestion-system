@@ -15,10 +15,7 @@ class OpenMeteoCurrentWeather(BaseModel):
 class OpenMeteoRawResponse(BaseModel):
     latitude: float
     longitude: float
-    generationtime_ms: float
     utc_offset_seconds: int
     timezone: str
-    timezone_abbreviation: str
-    elevation: float
     current_weather: OpenMeteoCurrentWeather
     model_config = ConfigDict(extra="allow")
