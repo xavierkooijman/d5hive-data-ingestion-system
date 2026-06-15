@@ -1,4 +1,3 @@
-# utils/tracer.py
 import os
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider

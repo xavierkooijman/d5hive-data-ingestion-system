@@ -1,10 +1,12 @@
 from ingestion.transformations.common import wind_direction_to_degrees
 from ingestion.transformations.time import normalize_string_timestamp
 from ingestion.pipelines.base import BaseETLPipeline
+from ingestion.models.ipma import IPMARawResponse
 
 
 class IPMAPipeline(BaseETLPipeline):
-    def validate_data(self, data):
+    def validate_raw_schema(self, data):
+        IPMARawResponse.model_validate(data)
         return data
 
     def transform_data(self, data):
