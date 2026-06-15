@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
+from ingestion.models.traffic_flow import TrafficFlowRawResponse
 from ingestion.pipelines.base import BaseETLPipeline
 
 
 class TrafficFlowPipeline(BaseETLPipeline):
-    def validate_data(self, data):
+    def validate_raw_schema(self, data):
+        TrafficFlowRawResponse.model_validate(data)
         return data
 
     def transform_data(self, data):
