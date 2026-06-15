@@ -42,8 +42,11 @@ class BaseETLPipeline(ABC):
                     data = self.extract_data()
 
                 with self.tracer.start_as_current_span("validate raw schema"):
+                    self.logger.info("Validating raw data schema")
                     try:
                         validated_raw_schema = self.validate_raw_schema(data)
+                        self.logger.info(
+                            "Raw data schema validated")
                     except ValidationError as e:
                         self.logger.error(
                             f"Data validation failed for pipeline {pipeline_name}: {e}")

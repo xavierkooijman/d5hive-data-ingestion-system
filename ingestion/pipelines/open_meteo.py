@@ -1,9 +1,11 @@
 from ingestion.transformations.time import normalize_unix_timestamp
 from ingestion.pipelines.base import BaseETLPipeline
+from ingestion.models.open_meteo import OpenMeteoRawResponse
 
 
 class OpenMeteoPipeline(BaseETLPipeline):
-    def validate_data(self, data):
+    def validate_raw_schema(self, data):
+        OpenMeteoRawResponse.model_validate(data)
         return data
 
     def transform_data(self, data):
