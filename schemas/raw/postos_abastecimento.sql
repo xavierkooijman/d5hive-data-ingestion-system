@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS postos_abastecimento (
     brand VARCHAR(50),
     latitude DOUBLE,
     longitude DOUBLE,
-    tstamp TIMESTAMPZ
+    tstamp TIMESTAMPTZ
 );

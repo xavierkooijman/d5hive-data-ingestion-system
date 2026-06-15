@@ -1,5 +1,4 @@
 CREATE TABLE IF NOT EXISTS open_meteo (
-    hostfeed VARCHAR(50),
     source VARCHAR(50),
     tstamp TIMESTAMPTZ,
     latitude DOUBLE,

@@ -1,5 +1,4 @@
 CREATE TABLE IF NOT EXISTS openweathermap (
-    hostfeed VARCHAR(50),
     source VARCHAR(50),
     tstamp TIMESTAMPTZ,
     latitude DOUBLE,
