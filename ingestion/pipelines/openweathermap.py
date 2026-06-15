@@ -15,7 +15,6 @@ class OpenWeatherMapPipeline(BaseETLPipeline):
         wind = data.get("wind", {})
 
         transformed_data = [{
-            "hostfeed": "hostfeed",
             "source": self.config["source"]["name"],
             "tstamp": normalize_unix_timestamp(data.get("dt")),
             "latitude": coordinates.get("lat"),

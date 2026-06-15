@@ -1,5 +1,4 @@
 CREATE TABLE IF NOT EXISTS tomtom_traffic_flow (
-    hostfeed VARCHAR(50),
     source VARCHAR(50),
     frc VARCHAR(10),
     tstamp TIMESTAMPTZ,

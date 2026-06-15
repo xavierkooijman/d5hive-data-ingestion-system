@@ -28,7 +28,6 @@ class IPMAPipeline(BaseETLPipeline):
                 "coordinates", [None, None])
 
             transformed_data.append({
-                "hostfeed": "hostfeed",
                 "source": self.config["source"]["name"],
                 "tstamp": normalize_string_timestamp(props.get("time"), self.config["source"]["timezone"]),
                 "latitude": coords[1],

@@ -12,7 +12,6 @@ class OpenMeteoPipeline(BaseETLPipeline):
         current_weather = data.get("current_weather", {})
 
         transformed_data = [{
-            "hostfeed": "hostfeed",
             "source": self.config["source"]["name"],
             "tstamp": normalize_unix_timestamp(current_weather.get("time")),
             "latitude": data.get("latitude"),

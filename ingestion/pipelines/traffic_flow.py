@@ -12,7 +12,6 @@ class TrafficFlowPipeline(BaseETLPipeline):
         flow_segment_data = data.get("flowSegmentData", {})
 
         transformed_data = [{
-            "hostfeed": "hostfeed",
             "source": self.config["source"]["name"],
             "tstamp": datetime.now(timezone.utc),
             "latitude": self.config["source"]["parameters"].get("point", "").split(",")[0],
@@ -23,7 +22,7 @@ class TrafficFlowPipeline(BaseETLPipeline):
             "free_flow_travel_time_s": flow_segment_data.get("freeFlowTravelTime"),
             "confidence": flow_segment_data.get("confidence"),
             "road_closure": flow_segment_data.get("roadClosure"),
-            "geometry": flow_segment_data.get("coordinates")
+            "flow_segment_geometry": flow_segment_data.get("coordinates")
         }]
 
         return transformed_data
