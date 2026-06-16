@@ -48,16 +48,7 @@ class SQLConnector:
         table_obj = Table(table, self.metadata, *
                           [Column(col) for col in columns], schema=schema)
 
-        dialect = self.engine.dialect.name
-        if dialect == "postgresql":
-            stmt = postgresql.insert(table_obj).values(
-                data).on_conflict_do_nothing()
-        elif dialect == "mysql":
-            stmt = mysql.insert(table_obj).values(data).prefix_with("IGNORE")
-        else:
-            logger.warning(
-                f"Unsupported database dialect '{dialect}'. Defaulting to standard insert without conflict handling.")
-            stmt = insert(table_obj).values(data)
+        stmt = insert(table_obj).values(data)
 
         try:
             with self.engine.begin() as conn:
