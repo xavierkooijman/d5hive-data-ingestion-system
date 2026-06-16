@@ -37,7 +37,8 @@ def run_inserts(config: dict, data: list):
             continue
 
         destination = destination_class(dest_config)
-        rowcount = destination.insert(dest["table"], data)
+        rowcount = destination.insert(
+            dest["table"], data, schema=dest.get("schema"))
         if not rowcount:
             logger.warning(
                 f"No rows were inserted into table: {dest['table']} for destination: {dest['name']}")
