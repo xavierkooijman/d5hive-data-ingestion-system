@@ -40,7 +40,6 @@ class PostosAbastecimentoPipeline(BaseETLPipeline):
         for idx, row in gdf_filtered.iterrows():
             transformed_data.append({
                 "globalId": row["globalid"],
-                "hostfeed": "hostfeed",
                 "source": self.config["source"]["name"],
                 "brand": row["marca"],
                 "latitude": row.geometry.y,

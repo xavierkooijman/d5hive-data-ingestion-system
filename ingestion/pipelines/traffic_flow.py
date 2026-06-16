@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from ingestion.models.traffic_flow import TrafficFlowRawResponse
 from ingestion.pipelines.base import BaseETLPipeline
+import json
 
 
 class TrafficFlowPipeline(BaseETLPipeline):
@@ -13,6 +14,7 @@ class TrafficFlowPipeline(BaseETLPipeline):
 
         transformed_data = [{
             "source": self.config["source"]["name"],
+            "frc": flow_segment_data.get("frc"),
             "tstamp": datetime.now(timezone.utc),
             "latitude": self.config["source"]["parameters"].get("point", "").split(",")[0],
             "longitude": self.config["source"]["parameters"].get("point", "").split(",")[1],
@@ -22,7 +24,7 @@ class TrafficFlowPipeline(BaseETLPipeline):
             "free_flow_travel_time_s": flow_segment_data.get("freeFlowTravelTime"),
             "confidence": flow_segment_data.get("confidence"),
             "road_closure": flow_segment_data.get("roadClosure"),
-            "flow_segment_geometry": flow_segment_data.get("coordinates")
+            "flow_segment_geometry": json.dumps(flow_segment_data.get("coordinates"))
         }]
 
         return transformed_data
