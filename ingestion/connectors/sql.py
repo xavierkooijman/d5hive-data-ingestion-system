@@ -27,12 +27,14 @@ class SQLConnector:
         if "certificate" in config:
             connection_args["ssl"] = {"ca": config["certificate"]}
 
-        self.engine = create_engine(url, connect_args=connection_args)
+        self.engine = create_engine(url, connect_args=connection_args, execution_options={
+                                    "isolation_level": "AUTOCOMMIT"})
         self.metadata = MetaData()
 
-    def insert(self, table: str, data: list) -> int | None:
+    def insert(self, table: str, data: list, schema: str = None) -> int | None:
         """Insert data into the specified table.
         Args:
+            schema (str): The name of the schema to which the table belongs.
             table (str): The name of the table into which to insert data.
             data (list): A list of dictionaries representing the rows and data to insert.
         Returns:
@@ -44,7 +46,7 @@ class SQLConnector:
         columns = list(data[0].keys())
 
         table_obj = Table(table, self.metadata, *
-                          [Column(col) for col in columns])
+                          [Column(col) for col in columns], schema=schema)
 
         dialect = self.engine.dialect.name
         if dialect == "postgresql":
@@ -57,6 +59,13 @@ class SQLConnector:
                 f"Unsupported database dialect '{dialect}'. Defaulting to standard insert without conflict handling.")
             stmt = insert(table_obj).values(data)
 
-        with self.engine.begin() as conn:
-            result = conn.execute(stmt)
-            return result.rowcount
+        try:
+            with self.engine.begin() as conn:
+                result = conn.execute(stmt)
+                return result.rowcount
+        except Exception as e:
+            if "duplicate" in str(e).lower():
+                logger.warning(
+                    f"Duplicate entry error while inserting into {table}: {e}")
+                return result.rowcount if result else None
+            raise

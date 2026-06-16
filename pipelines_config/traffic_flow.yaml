@@ -9,14 +9,15 @@ source:
     key: $TOM_TOM_API_KEY
 
 destinations:
-  - type: cratedb
-    name: CrateDB
-    host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
-    port: 4200
-    database: crate
+  - type: postgresql
+    name: MotherDuck
+    host: pg.eu-central-1-aws.motherduck.com
+    port: 5432
+    database: warehouse
+    schema: raw
     table: tomtom_traffic_flow
-    username: admin
-    password: $CRATEDB_PASSWORD
+    username: postgres
+    password: $MOTHERDUCK_TOKEN
 
 save_raw: false
 

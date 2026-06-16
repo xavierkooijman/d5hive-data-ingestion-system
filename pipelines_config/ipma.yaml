@@ -9,33 +9,43 @@ source:
   timezone: Europe/Lisbon
 
 destinations:
-  - type: cratedb
-    name: CrateDB
-    host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
-    port: 4200
-    database: crate
-    table: ipma
-    username: admin
-    password: $CRATEDB_PASSWORD
+  #  - type: cratedb
+  #    name: CrateDB
+  #    host: cmmaia-xavier.aks1.westeurope.azure.cratedb.net
+  #    port: 4200
+  #    database: crate
+  #    table: ipma
+  #    username: admin
+  #    password: $CRATEDB_PASSWORD
 
-  - type: mysql
-    name: Aiven
-    host: cmmaia-xavier-xavierkooijman-e96b.f.aivencloud.com
-    port: 23850
-    database: defaultdb
-    table: ipma
-    username: avnadmin
-    password: $AIVEN_PASSWORD
+  #  - type: mysql
+  #    name: Aiven
+  #    host: cmmaia-xavier-xavierkooijman-e96b.f.aivencloud.com
+  #    port: 23850
+  #    database: defaultdb
+  #    table: ipma
+  #    username: avnadmin
+  #    password: $AIVEN_PASSWORD
 
-  - type: mysql
-    name: TiDB Cloud
-    host: gateway01.eu-central-1.prod.aws.tidbcloud.com
-    port: 4000
-    database: test
+  #  - type: mysql
+  #    name: TiDB Cloud
+  #    host: gateway01.eu-central-1.prod.aws.tidbcloud.com
+  #    port: 4000
+  #    database: test
+  #    table: ipma
+  #    username: 495NGCCkPoossRz.root
+  #    password: $TIDB_PASSWORD
+  #    certificate: isrgrootx1.pem
+
+  - type: postgresql
+    name: MotherDuck
+    host: pg.eu-central-1-aws.motherduck.com
+    port: 5432
+    database: warehouse
+    schema: raw
     table: ipma
-    username: 495NGCCkPoossRz.root
-    password: $TIDB_PASSWORD
-    certificate: isrgrootx1.pem
+    username: postgres
+    password: $MOTHERDUCK_TOKEN
 
 save_raw: false
 
